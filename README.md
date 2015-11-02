@@ -19,6 +19,6 @@ The available commands are the following:
 - **editstudioproductini**: tries to open an editor for the built Studio INI file. _This function requires that an `EDITOR` is set as env variable._
 
 Each of the above commands work in two different ways:
-- either by calling them **without arguments** where the repository will be taken from the context of the current directory, echoing an error message whenever it cannot find one 
-- or by passing the **name of the directory** of the repository to be used.
+- either by calling them **without arguments** where the repository will be taken from the context of the current directory, echoing an error message whenever it cannot find one: `mule-tooling/..$ openstudio`
+- or by passing the **name of the directory** of the repository to be used: `$ openstudio mule-tooling-2`
 _This requires the `WS_HOME` env variable to be set to the path where all the respositories are cloned._
