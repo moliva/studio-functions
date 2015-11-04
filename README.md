@@ -21,4 +21,13 @@ The available commands are the following:
 Each of the above commands work in two different ways:
 - either by calling them **without arguments** where the repository will be taken from the context of the current directory, echoing an error message whenever it cannot find one: `mule-tooling/..$ openstudio`
 - or by passing the **name of the directory** of the repository to be used: `$ openstudio mule-tooling-2`
-_This requires the `WS_HOME` env variable to be set to the path where all the respositories are cloned._
+_This requires the `WS_HOME` env variable to be set to the path where all the respositories are cloned as shown in the following example._
+```bash
+~
+├── repos # <-- WS_HOME=~/repos
+│   ├── mule-tooling
+│   ├── mule-tooling-2
+│   ├── mule-tooling-3
+│   ...
+...
+```
