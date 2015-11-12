@@ -7,7 +7,7 @@ function __studioproductpathos {
 
 	local PATH_TO_PRODUCT_MAC=$PATH_TO_PRODUCT_BASE/macosx/cocoa/x86_64/AnypointStudio
 
-	local PATH_TO_PRODUCT_LINUX_BASE=$PATH_TO_PRODUCT_BASE/linux/gtk/
+	local PATH_TO_PRODUCT_LINUX_BASE=$PATH_TO_PRODUCT_BASE/linux/gtk
 	local PATH_TO_PRODUCT_LINUX_64=$PATH_TO_PRODUCT_LINUX_BASE/x86_64/AnypointStudio
 	local PATH_TO_PRODUCT_LINUX_32=$PATH_TO_PRODUCT_LINUX_BASE/x86/AnypointStudio
 
