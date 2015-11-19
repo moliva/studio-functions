@@ -2,6 +2,14 @@
 DEBUG_LINE="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 STUDIO_EXEC_NAME=AnypointStudio
 
+function __edit {
+	if [ "$1" == "" ]; then
+  		exec $EDITOR .
+	else
+  		exec $EDITOR $1
+	fi
+}
+
 function __studioproductpathos {
 	local PATH_TO_PRODUCT_BASE=org.mule.tooling.products/org.mule.tooling.studio.product/target/products/studio.product
 
@@ -52,7 +60,7 @@ function __studioproductini {
 
 function editstudioproductini {
 	local ini_file=$(__studioproductini $1)
-	edit $ini_file
+	__edit $ini_file
 }
 
 function openstudio {
