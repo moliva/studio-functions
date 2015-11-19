@@ -16,7 +16,13 @@ The available commands are the following:
 - **openstudio**: runs a just built version of Studio based on the code repository. This functions expects that a `mvn package` has been run.
 - **setdebugforstudio**: sets the remote debugging line to the built product INI file
 - **unsetdebugforstudio**: unsets the remote debbuging line
-- **editstudioproductini**: tries to open an editor for the built Studio INI file. _This function requires that an `EDITOR` is set as env variable._
+- **editstudioproductini**: tries to open an editor for the built Studio INI file. 
+  **_Note:_** _The edit function requires that an `EDITOR` is set as env variable referencing to the executable file or the command, depending on the use. Example:_
+```bash
+export EDITOR=vim
+# or in a Mac, this could also be possible
+export EDITOR=$HOME/Applications/Atom.app/Contents/MacOS/Atom
+```
 
 Each of the above commands work in two different ways:
 - either by calling them **without arguments** where the repository will be taken from the context of the current directory, echoing an error message whenever it cannot find one: `mule-tooling/..$ openstudio`
