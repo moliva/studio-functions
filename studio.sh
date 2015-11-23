@@ -2,10 +2,10 @@
 DEBUG_LINE="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 STUDIO_EXEC_NAME=AnypointStudio
 
-function __edit {
-	if [ "$1" == "" ]; then
+function __edit {	
+	if [ "$1" = "" ]; then		
   		exec $EDITOR .
-	else
+	else		
   		exec $EDITOR $1
 	fi
 }
