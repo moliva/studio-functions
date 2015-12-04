@@ -13,7 +13,7 @@ function __edit {
 function __studioproductpathos {
 	local PATH_TO_PRODUCT_BASE=org.mule.tooling.products/org.mule.tooling.studio.product/target/products/studio.product
 
-	local PATH_TO_PRODUCT_MAC=$PATH_TO_PRODUCT_BASE/macosx/cocoa/x86_64/AnypointStudio
+	local PATH_TO_PRODUCT_MAC=$PATH_TO_PRODUCT_BASE/macosx/cocoa/x86_64/AnypointStudio.app
 
 	local PATH_TO_PRODUCT_LINUX_BASE=$PATH_TO_PRODUCT_BASE/linux/gtk
 	local PATH_TO_PRODUCT_LINUX_64=$PATH_TO_PRODUCT_LINUX_BASE/x86_64/AnypointStudio
@@ -66,7 +66,7 @@ function editstudioproductini {
 function openstudio {
 	local PRODUCT_PATH=$(__studioproductpath $1)
 
-	if [[ $OSTYPE == "darwin"* ]]; then open $PRODUCT_PATH/$STUDIO_EXEC_NAME
+	if [[ $OSTYPE == "darwin"* ]]; then open $PRODUCT_PATH
 	elif [[ "$OSTYPE" == "msys" ||  "$OSTYPE" == "cygwin" ]]; then $PRODUCT_PATH/$STUDIO_EXEC_NAME.exe
 	# ti's a Linux
 	else $PRODUCT_PATH/$STUDIO_EXEC_NAME
