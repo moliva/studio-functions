@@ -88,10 +88,13 @@ function unsetdebugforstudio {
 }
 
 function buildstudio {
+	# local original_dir="$PWD"
+	# TODO - we need to know the repo location before any build is done! - moliva
 	eval "$STUDIO_BUILD_COMMAND"
 	local build_code=$?
 	if [[ $build_code ]]; then
 		command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished building :)" with title "Built finished!" sound name "default"'
 	fi
+	# cd $original_dir
 	return build_code
 }
