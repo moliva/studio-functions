@@ -1,4 +1,8 @@
 
+if [ -z "$STUDIO_BUILD_COMMAND" ]; then # if STUDIO_BUILD_COMMAND is not defined, initialize it
+	export STUDIO_BUILD_COMMAND="mvn clean package"
+fi
+
 DEBUG_LINE="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 STUDIO_EXEC_NAME=AnypointStudio
 
@@ -83,3 +87,11 @@ function unsetdebugforstudio {
 	sed -i.ini "/^$DEBUG_LINE/d" $STUDIO_INI
 }
 
+function buildstudio {
+	eval "$STUDIO_BUILD_COMMAND"
+	local build_code=$?
+	if [[ $build_code ]]; then
+		command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished building :)" with title "Built finished!" sound name "default"'
+	fi
+	return build_code
+}
