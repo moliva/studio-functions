@@ -1,4 +1,4 @@
-
+#!/usr/bin/env sh
 if [ -z "$STUDIO_BUILD_COMMAND" ]; then # if STUDIO_BUILD_COMMAND is not defined, initialize it
 	export STUDIO_BUILD_COMMAND="mvn clean package"
 fi
@@ -6,10 +6,10 @@ fi
 DEBUG_LINE="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 STUDIO_EXEC_NAME=AnypointStudio
 
-function __edit {	
-	if [ "$1" = "" ]; then		
+function __edit {
+	if [ "$1" = "" ]; then
   		exec $EDITOR .
-	else		
+	else
   		exec $EDITOR $1
 	fi
 }
@@ -38,20 +38,22 @@ function __studioproductpathos {
 	fi
 }
 
-function __studioproductpathfromcontext {
+function __studiorepopathfromcontext {
 	if [ -z $1 ]; then return 1; else
-	       	if [ $1 = "/" ]; then __path="Error trying to find path from this context"; else
-			if [ -d "$1/$(__studioproductpathos)" ]; then __path=$1; else
-				__dir=$(dirname $1)
-				__path=$(__studioproductpathfromcontext $__dir)
-			fi
+		local original_dir=$PWD
+		cd "$1"
+		if [[ `git config remote.origin.url` =~ mulesoft/Mule-Tooling ]]; then
+			local __path=`git rev-parse --show-toplevel`
+		else
+			local __path="Error trying to find path from this context"
 		fi
+		cd "$original_dir"
 	fi
-	echo $__path
+	echo "$__path"
 }
 
 function __studioproductpath {
-	if [ -z $1 ]; then REPO_LOCATION=$(__studioproductpathfromcontext `pwd`); else REPO_LOCATION=$WS_HOME/$1; fi
+	if [ -z $1 ]; then REPO_LOCATION=$(__studiorepopathfromcontext `pwd`); else REPO_LOCATION=$WS_HOME/$1; fi
 	echo $REPO_LOCATION/$(__studioproductpathos)
 }
 
@@ -88,13 +90,15 @@ function unsetdebugforstudio {
 }
 
 function buildstudio {
-	# local original_dir="$PWD"
-	# TODO - we need to know the repo location before any build is done! - moliva
+	local original_dir="$PWD"
+	local repo_location=$(__studiorepopathfromcontext $PWD)
+	cd $repo_location
 	eval "$STUDIO_BUILD_COMMAND"
 	local build_code=$?
-	if [[ $build_code ]]; then
+	if [[ $build_code = 0 ]]; then
+		echo $build_code
 		command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished building :)" with title "Built finished!" sound name "default"'
 	fi
-	# cd $original_dir
+	cd $original_dir
 	return build_code
 }
