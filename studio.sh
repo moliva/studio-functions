@@ -13,8 +13,10 @@ if [ -z "$STUDIO_BUILD_OPTS" ]; then
 	export STUDIO_BUILD_OPTS=
 fi
 
-# TODO - could these be local?
-DEBUG_LINE="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+if [ -z "$DEBUG_LINE" ]; then
+	export DEBUG_LINE="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+fi
+
 STUDIO_EXEC_NAME=AnypointStudio
 
 function __edit {
