@@ -1,8 +1,19 @@
 #!/usr/bin/env sh
+
+# initialize env vars
 if [ -z "$STUDIO_BUILD_COMMAND" ]; then # if STUDIO_BUILD_COMMAND is not defined, initialize it
 	export STUDIO_BUILD_COMMAND="mvn clean package"
 fi
 
+if [ -z "$EDITOR" ]; then
+	export EDITOR="vim"
+fi
+
+if [ -z "$STUDIO_BUILD_OPTS" ]; then
+	export STUDIO_BUILD_OPTS=
+fi
+
+# TODO - could these be local?
 DEBUG_LINE="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 STUDIO_EXEC_NAME=AnypointStudio
 
@@ -15,26 +26,26 @@ function __edit {
 }
 
 function __studioproductpathos {
-	local PATH_TO_PRODUCT_BASE=org.mule.tooling.products/org.mule.tooling.studio.product/target/products/studio.product
+	local path_to_product_base=org.mule.tooling.products/org.mule.tooling.studio.product/target/products/studio.product
 
-	local PATH_TO_PRODUCT_MAC=$PATH_TO_PRODUCT_BASE/macosx/cocoa/x86_64/AnypointStudio.app
+	local path_to_product_mac=$path_to_product_base/macosx/cocoa/x86_64/AnypointStudio.app
 
-	local PATH_TO_PRODUCT_LINUX_BASE=$PATH_TO_PRODUCT_BASE/linux/gtk
-	local PATH_TO_PRODUCT_LINUX_64=$PATH_TO_PRODUCT_LINUX_BASE/x86_64/AnypointStudio
-	local PATH_TO_PRODUCT_LINUX_32=$PATH_TO_PRODUCT_LINUX_BASE/x86/AnypointStudio
+	local path_to_product_linux_base=$path_to_product_base/linux/gtk
+	local path_to_product_linux_64=$path_to_product_linux_base/x86_64/AnypointStudio
+	local path_to_product_linux_32=$path_to_product_linux_base/x86/AnypointStudio
 
-	local PATH_TO_PRODUCT_WINDOWS_BASE=$PATH_TO_PRODUCT_BASE/win32/win32
-	local PATH_TO_PRODUCT_WINDOWS_64=$PATH_TO_PRODUCT_WINDOWS_BASE/x86_64/AnypointStudio
-	local PATH_TO_PRODUCT_WINDOWS_32=$PATH_TO_PRODUCT_WINDOWS_BASE/x86/AnypointStudio
+	local path_to_product_windows_base=$path_to_product_base/win32/win32
+	local path_to_product_windows_64=$path_to_product_windows_base/x86_64/AnypointStudio
+	local path_to_product_windows_32=$path_to_product_windows_base/x86/AnypointStudio
 
-	if [[ "$OSTYPE" == "darwin"* ]]; then echo $PATH_TO_PRODUCT_MAC
-	elif [[ "$OSTYPE" == "msys" ||  "$OSTYPE" == "cygwin" ]]; then
-	       if [[ `uname -m` == "x86_64" ]]; then echo $PATH_TO_PRODUCT_WINDOWS_64
-	       else echo $PATH_TO_PRODUCT_WINDOWS_32
+	if [[ "$OSTYPE" == "darwin"* ]]; then echo $path_to_product_mac
+	elif [[ "$OSTYPE" == "msys" ||  "$OSTYPE" == "cygwin" ]]; then # windows terminal
+	       if [[ `uname -m` == "x86_64" ]]; then echo $path_to_product_windows_64
+	       else echo $path_to_product_windows_32
 	       fi
 	# ti's a Linux
-        elif [[ `uname -m` == "x86_64" ]]; then echo $PATH_TO_PRODUCT_LINUX_64
-	else echo $PATH_TO_PRODUCT_LINUX_32
+        elif [[ `uname -m` == "x86_64" ]]; then echo $path_to_product_linux_64
+	else echo $path_to_product_linux_32
 	fi
 }
 
@@ -43,62 +54,71 @@ function __studiorepopathfromcontext {
 		local original_dir=$PWD
 		cd "$1"
 		if [[ `git config remote.origin.url` =~ mulesoft/Mule-Tooling ]]; then
-			local __path=`git rev-parse --show-toplevel`
+			echo `git rev-parse --show-toplevel`
+			local return_code=0
 		else
-			local __path="Error trying to find path from this context"
+			local return_code=1
 		fi
 		cd "$original_dir"
 	fi
-	echo "$__path"
+	return $return_code
 }
 
 function __studioproductpath {
-	if [ -z $1 ]; then REPO_LOCATION=$(__studiorepopathfromcontext `pwd`); else REPO_LOCATION=$WS_HOME/$1; fi
-	echo $REPO_LOCATION/$(__studioproductpathos)
+	if [ -z $1 ]; then 
+		local repo_location=$(__studiorepopathfromcontext `pwd`)
+	else 
+		local repo_location=$WS_HOME/$1
+	fi
+
+	echo $repo_location/$(__studioproductpathos)
 }
 
 function __studioproductini {
-	local PRODUCT_PATH=$(__studioproductpath $1)
-	if [[ $OSTYPE == "darwin"* ]]; then echo $PRODUCT_PATH/$STUDIO_EXEC_NAME.app/Contents/MacOS/$STUDIO_EXEC_NAME.ini
-	else echo $PRODUCT_PATH/$STUDIO_EXEC_NAME.ini
+	local product_path=$(__studioproductpath $1)
+	if [[ $OSTYPE == "darwin"* ]]; then echo $product_path/$STUDIO_EXEC_NAME.app/Contents/MacOS/$STUDIO_EXEC_NAME.ini
+	else echo $product_path/$STUDIO_EXEC_NAME.ini
 	fi
 }
 
 function editstudioproductini {
-	local ini_file=$(__studioproductini $1)
-	__edit $ini_file
+	local studio_ini=$(__studioproductini $1)
+	__edit $studio_ini
 }
 
 function openstudio {
-	local PRODUCT_PATH=$(__studioproductpath $1)
+	local product_path=$(__studioproductpath $1)
 
-	if [[ $OSTYPE == "darwin"* ]]; then open $PRODUCT_PATH
-	elif [[ "$OSTYPE" == "msys" ||  "$OSTYPE" == "cygwin" ]]; then $PRODUCT_PATH/$STUDIO_EXEC_NAME.exe
+	if [[ $OSTYPE == "darwin"* ]]; then open $product_path
+	elif [[ "$OSTYPE" == "msys" ||  "$OSTYPE" == "cygwin" ]]; then $product_path/$STUDIO_EXEC_NAME.exe
 	# ti's a Linux
-	else $PRODUCT_PATH/$STUDIO_EXEC_NAME
+	else $product_path/$STUDIO_EXEC_NAME
 	fi
 }
 
 function setdebugforstudio {
-	local STUDIO_INI=$(__studioproductini $1)
-	echo $DEBUG_LINE >> $STUDIO_INI
+	local studio_ini=$(__studioproductini $1)
+	echo $DEBUG_LINE >> $studio_ini
 }
 
 function unsetdebugforstudio {
-	local STUDIO_INI=$(__studioproductini $1)
-	sed -i.ini "/^$DEBUG_LINE/d" $STUDIO_INI
+	local studio_ini=$(__studioproductini $1)
+	sed -i.ini "/^$DEBUG_LINE/d" $studio_ini
 }
 
 function buildstudio {
 	local original_dir="$PWD"
+	local studio_build_parameters=$*
 	local repo_location=$(__studiorepopathfromcontext $PWD)
-	cd $repo_location
-	eval "$STUDIO_BUILD_COMMAND"
-	local build_code=$?
-	if [[ $build_code = 0 ]]; then
-		echo $build_code
-		command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished building :)" with title "Built finished!" sound name "default"'
+	if [ -n "$repo_location" ]; then
+		cd $repo_location
+		eval "$STUDIO_BUILD_COMMAND $STUDIO_BUILD_OPTS $studio_build_parameters"
+		local build_code=$?
+		if [[ $build_code = 0 ]]; then
+			command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished building :)" with title "Built finished!" sound name "default"'
+		fi
+		cd $original_dir
+		return $build_code
+	else echo "Error trying to find the repo location"; return 1
 	fi
-	cd $original_dir
-	return build_code
 }
