@@ -1,4 +1,4 @@
-# studio-functions
+# studio-utils
 
 ## Installation
 - Clone this repo to your favorite location:
@@ -9,11 +9,13 @@ git clone https://github.com/moliva/studio-functions.git /path/to/repo
 ```bash
 source /path/to/repo/studio.sh
 ```
-**_WARNING:_** Currently only for MacOS! Sorry!
-
 ## Usage
 The available commands are the following:
-- **openstudio**: runs a just built version of Studio based on the code repository. This functions expects that a `mvn package` has been run.
+- **buildstudio**: runs a `STUDIO_BUILD_COMMAND` in the current repository and receives an optional list of parameters to be appended to the command and fires a notification whenever the build is finished (only for Mac). The command is set by default to:
+```bash
+export STUDIO_BUILD_COMMAND="mvn clean package"
+```
+- **openstudio**: runs a just built version of Studio based on the code repository. This functions expects that a `mvn package` has been run previously.
 - **setdebugforstudio**: sets the remote debugging line to the built product INI file
 - **unsetdebugforstudio**: unsets the remote debbuging line
 - **editstudioproductini**: tries to open an editor for the built Studio INI file. 
