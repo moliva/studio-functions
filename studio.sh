@@ -67,9 +67,9 @@ function __studiorepopathfromcontext {
 }
 
 function __studioproductpath {
-	if [ -z $1 ]; then 
+	if [ -z $1 ]; then
 		local repo_location=$(__studiorepopathfromcontext `pwd`)
-	else 
+	else
 		local repo_location=$WS_HOME/$1
 	fi
 
@@ -78,23 +78,31 @@ function __studioproductpath {
 
 function __studioproductini {
 	local product_path=$(__studioproductpath $1)
-	if [[ $OSTYPE == "darwin"* ]]; then echo $product_path/$STUDIO_EXEC_NAME.app/Contents/MacOS/$STUDIO_EXEC_NAME.ini
-	else echo $product_path/$STUDIO_EXEC_NAME.ini
+	if [ -n $product_path ]; then
+		if [[ $OSTYPE == "darwin"* ]]; then echo $product_path/$STUDIO_EXEC_NAME.app/Contents/MacOS/$STUDIO_EXEC_NAME.ini
+		else echo $product_path/$STUDIO_EXEC_NAME.ini
+		fi
 	fi
 }
 
 function editstudioproductini {
 	local studio_ini=$(__studioproductini $1)
-	__edit $studio_ini
+	if [ -n $studio_ini ]; then
+		__edit $studio_ini
+	else echo "Could not find the INI file in the current repo"
+	fi
 }
 
 function openstudio {
 	local product_path=$(__studioproductpath $1)
 
-	if [[ $OSTYPE == "darwin"* ]]; then open $product_path
-	elif [[ "$OSTYPE" == "msys" ||  "$OSTYPE" == "cygwin" ]]; then $product_path/$STUDIO_EXEC_NAME.exe
-	# ti's a Linux
-	else $product_path/$STUDIO_EXEC_NAME
+	if [ -n $product_path ]; then
+		if [[ $OSTYPE == "darwin"* ]]; then open $product_path
+		elif [[ "$OSTYPE" == "msys" ||  "$OSTYPE" == "cygwin" ]]; then $product_path/$STUDIO_EXEC_NAME.exe
+		# ti's a Linux
+		else $product_path/$STUDIO_EXEC_NAME
+		fi
+	else echo "Could not find the repo location"
 	fi
 }
 
