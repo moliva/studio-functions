@@ -125,7 +125,7 @@ function buildstudio {
 		eval "$STUDIO_BUILD_COMMAND $STUDIO_BUILD_OPTS $studio_build_parameters"
 		local build_code=$?
 		if [[ $build_code = 0 ]]; then
-			command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished building :)" with title "Built finished!" sound name "default"'
+			command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished building :)" with title "Build finished!" sound name "default"'
 		fi
 		cd $original_dir
 		return $build_code
