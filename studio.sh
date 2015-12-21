@@ -126,6 +126,8 @@ function buildstudio {
 		local build_code=$?
 		if [[ $build_code = 0 ]]; then
 			command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished building :)" with title "Build finished!" sound name "default"'
+		else
+			command -v osascript >/dev/null 2>&1 && osascript -e 'display notification "Studio has finished unsuccessfully :(" with title "Build failed!" sound name "Basso"'
 		fi
 		cd $original_dir
 		return $build_code
