@@ -138,3 +138,8 @@ function buildstudio {
 	else echo "Error trying to find the repo location"; return 1
 	fi
 }
+
+function updatestudioutils {
+	sh -c "$(curl -fsSL https://raw.github.com/moliva/studio-utils/master/scripts/installation.sh)"
+	source ~/.studio-utils/studio.sh
+}
