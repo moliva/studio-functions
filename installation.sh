@@ -57,6 +57,11 @@ upstall() {
 				do_upstall;;
 		esac
 	fi
+
+	if [ $? == 0 ]; then
+		# update the current version
+		export CURRENT_STUDIO_UTILS_VERSION=$TO_BE_INSTALLED_STUDIO_UTILS_VERSION
+	fi
 }
 
 upstall
