@@ -85,6 +85,10 @@ function __studioproductini {
 	fi
 }
 
+# ----------------------------------------------
+# ------------ Public functions ------------
+# ----------------------------------------------
+
 function editstudioproductini {
 	local studio_ini=$(__studioproductini $1)
 	if [ -n $studio_ini ]; then
