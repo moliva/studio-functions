@@ -3,11 +3,11 @@
 ## Installation
 - Clone this repo to your favorite location:
 ```bash
-git clone https://github.com/moliva/studio-functions.git /path/to/repo
+git clone https://github.com/moliva/studio-utils.git ~/.studio-utils
 ```
 - Add to your `~/.bashrc`, `~/.zshrc` or `~/.profile` file the following:
 ```bash
-source /path/to/repo/studio.sh
+source ~/.studio-utils/studio.sh
 ```
 ## Usage
 The available commands are the following:
